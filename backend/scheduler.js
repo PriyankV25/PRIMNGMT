@@ -12,9 +12,22 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 dotenv.config();
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://nypswixefpidztdvcmbc.supabase.co';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55cHN3aXhlZnBpZHp0ZHZjbWJjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MzUzOTkxNiwiZXhwIjoyMTA5MTE1OTE2fQ.3AJXEC3OV6OVbIhwcbE7YHQXkmTSPdDgpwzwJOU8A1g';
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const DEFAULT_RECIPIENT = process.env.NOTIFICATION_RECIPIENT || 'priyank.saxena.dev@gmail.com';
+
+
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+  throw new Error(
+    '[Scheduler] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables.'
+  );
+}
+
+if (!DEFAULT_RECIPIENT) {
+  throw new Error(
+    '[Scheduler] Missing NOTIFICATION_RECIPIENT environment variable.'
+  );
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false }
