@@ -130,6 +130,7 @@ function renderProjectsLayout(container) {
               <span class="empty-icon">📂</span>
               <h3>No Project Selected</h3>
               <p>Select a project from the left or create a new project to start managing tasks.</p>
+              <br>
               <button class="btn btn-primary mt-3" id="btn-create-project-empty">+ Create Project</button>
             </div>
           ` : renderProjectDetailContent(selectedProject)}

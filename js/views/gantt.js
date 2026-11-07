@@ -176,6 +176,7 @@ function renderGanttChart(project) {
           <span class="progress-pill">${projectProgress}% Complete (${completedTasks}/${tasks.length} tasks)</span>
         </div>
       </div>
+       <br><br>
 
       <!-- Gantt Workspace Grid -->
       <div class="gantt-split-board">

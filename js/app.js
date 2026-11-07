@@ -2,7 +2,7 @@
 // Main Application Controller (Vanilla JS SPA Router & Shell)
 // ==============================================================================
 
-import { initAuth, getCurrentUser, onAuthStateChanged, logoutUser, loginUser, signUpUser } from './auth.js';
+import { initAuth, getCurrentUser, onAuthStateChanged, logoutUser, loginUser } from './auth.js';
 import { renderDashboard } from './views/dashboard.js';
 import { renderProjects, openProjectModal } from './views/projects.js';
 import { renderTodos, openTodoModal } from './views/todos.js';
@@ -88,7 +88,7 @@ export function navigateTo(viewName, param = null) {
     gantt: 'Gantt Charts',
     history: 'Completion History'
   };
-  document.title = `${titles[viewName] || 'Overview'} | FlowCraft Personal`;
+  document.title = `${titles[viewName] || 'Overview'} | PRIMNGMT Personal`;
 }
 
 // ==============================================================================
@@ -123,46 +123,234 @@ function showAuthScreen() {
   }
 }
 
+//<button class="auth-tab" id="tab-signup">Create Account</button>
+
+// function renderAuthForm() {
+//   const container = document.getElementById('auth-view');
+//   if (!container) return;
+
+//   container.innerHTML = `
+//     <div class="auth-card animate-fade-in">
+//       <div class="auth-header">
+//         <div class="auth-logo">
+// //           <h1>PRIMNGMT</h1>
+//         </div>
+//         <p class="auth-subtitle">Personal Project Management & Productivity Dashboard</p>
+//       </div>
+
+//       <div class="auth-tabs">
+//         <button class="auth-tab active" id="tab-login">Sign In</button>
+//       </div>
+
+//       <form id="auth-form" class="auth-body">
+//         <div class="form-group">
+//           <label for="auth-email">Email Address</label>
+//           <input type="email" id="auth-email" class="form-input" required placeholder="priyank.saxena.dev@gmail.com" value="priyank.saxena.dev@gmail.com">
+//         </div>
+
+//         <div class="form-group">
+//           <label for="auth-password">Password</label>
+//           <input type="password" id="auth-password" class="form-input" required minlength="6" placeholder="••••••••">
+//         </div>
+
+//         <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-auth-submit">
+//           Sign In
+//         </button>
+
+//         <div class="auth-help-note">
+//           <p>Exclusively for individual productivity. Powered securely by Supabase Authentication & PostgreSQL RLS.</p>
+//         </div>
+//       </form>
+//     </div>
+//   `;
+
+
+
 function renderAuthForm() {
   const container = document.getElementById('auth-view');
   if (!container) return;
 
   container.innerHTML = `
+  
+<!-- Decorative project-management workspace -->
+<div class="auth-workspace-scene" aria-hidden="true">
+
+  <!-- Gantt timeline -->
+  <div class="scene-card gantt-float">
+    <div class="scene-card-heading">
+      <span>▤ Project Timeline</span>
+      <span class="scene-live-dot"></span>
+    </div>
+
+    <div class="gantt-row">
+      <span>Planning</span>
+      <div class="gantt-track">
+        <i class="gantt-bar bar-one"></i>
+      </div>
+    </div>
+
+    <div class="gantt-row">
+      <span>Development</span>
+      <div class="gantt-track">
+        <i class="gantt-bar bar-two"></i>
+      </div>
+    </div>
+
+    <div class="gantt-row">
+      <span>Testing</span>
+      <div class="gantt-track">
+        <i class="gantt-bar bar-three"></i>
+      </div>
+    </div>
+
+    <div class="gantt-row">
+      <span>Deployment</span>
+      <div class="gantt-track">
+        <i class="gantt-bar bar-four"></i>
+      </div>
+    </div>
+
+    <div class="gantt-footer">
+      <span>Week 01</span>
+      <span>Week 02</span>
+      <span>Week 03</span>
+    </div>
+  </div>
+
+  <!-- Project progress -->
+  <div class="scene-card progress-float">
+    <div class="scene-card-heading">
+      <span>◉ Project Progress</span>
+      <span class="scene-tag">ACTIVE</span>
+    </div>
+
+    <div class="progress-number">78%</div>
+    <div class="progress-track">
+      <div class="progress-fill"></div>
+    </div>
+
+    <div class="progress-caption">
+      <span>Tasks completed</span>
+      <strong>18 / 23</strong>
+    </div>
+  </div>
+
+  <!-- Calendar milestone -->
+  <div class="scene-card calendar-float">
+    <div class="scene-card-heading">
+      <span>▦ Upcoming Deadline</span>
+    </div>
+
+    <div class="calendar-date">
+      <strong>12</strong>
+      <div>
+        <span>NOVEMBER</span>
+        <small>Project Milestone</small>
+      </div>
+    </div>
+
+    <div class="calendar-status">
+      <span class="scene-live-dot"></span>
+      Deadline approaching
+    </div>
+  </div>
+
+  <!-- Completed tasks -->
+  <div class="scene-card tasks-float">
+    <div class="scene-card-heading">
+      <span>☑ Task Checklist</span>
+      <span class="scene-tag">TODAY</span>
+    </div>
+
+    <div class="scene-task completed">
+      <span class="task-check">✓</span>
+      <span>Project planning</span>
+    </div>
+
+    <div class="scene-task completed">
+      <span class="task-check">✓</span>
+      <span>Research & analysis</span>
+    </div>
+
+    <div class="scene-task pending">
+      <span class="task-pending"></span>
+      <span>Review deliverables</span>
+    </div>
+  </div>
+
+</div>
+
     <div class="auth-card animate-fade-in">
       <div class="auth-header">
         <div class="auth-logo">
-          <span class="logo-icon">🚀</span>
-          <h1>FlowCraft</h1>
+          <h1>PRIMNGMT</h1>
         </div>
-        <p class="auth-subtitle">Personal Project Management & Productivity Dashboard</p>
-      </div>
-
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-login">Sign In</button>
-        <button class="auth-tab" id="tab-signup">Create Account</button>
+        <p class="auth-subtitle">
+          Personal Project Management Dashboard
+        </p>
       </div>
 
       <form id="auth-form" class="auth-body">
         <div class="form-group">
           <label for="auth-email">Email Address</label>
-          <input type="email" id="auth-email" class="form-input" required placeholder="priyank.saxena.dev@gmail.com" value="priyank.saxena.dev@gmail.com">
+          <input
+            type="email"
+            id="auth-email"
+            class="form-input"
+            required
+            placeholder="Enter your email"
+            value="priyank.saxena.dev@gmail.com"
+          >
         </div>
 
         <div class="form-group">
           <label for="auth-password">Password</label>
-          <input type="password" id="auth-password" class="form-input" required minlength="6" placeholder="••••••••">
+          <input
+            type="password"
+            id="auth-password"
+            class="form-input"
+            required
+            placeholder="Enter your password"
+          >
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-auth-submit">
+        <button
+          type="submit"
+          class="btn btn-primary btn-block btn-lg"
+          id="btn-auth-submit"
+        >
           Sign In
         </button>
 
         <div class="auth-help-note">
-          <p>Exclusively for individual productivity. Powered securely by Supabase Authentication & PostgreSQL RLS.</p>
+          <p>Secure personal workspace powered by Supabase.</p>
         </div>
       </form>
     </div>
   `;
+
+  const form = container.querySelector('#auth-form');
+  const submitBtn = container.querySelector('#btn-auth-submit');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = container.querySelector('#auth-email').value.trim();
+    const password = container.querySelector('#auth-password').value;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Signing in...';
+
+    try {
+      await loginUser(email, password);
+    } catch (err) {
+      showToast(err.message, 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Sign In';
+    }
+  });
+}
+
 
   let mode = 'login';
   const tabLogin = container.querySelector('#tab-login');
@@ -209,7 +397,7 @@ function renderAuthForm() {
       submitBtn.textContent = mode === 'login' ? 'Sign In' : 'Create Free Account';
     }
   });
-}
+
 
 // ==============================================================================
 // 4. Global Event Handlers

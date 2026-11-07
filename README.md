@@ -1,239 +1,666 @@
-# FlowCraft: Personal Project Management & Productivity Dashboard
+# 🚀 PRIMNGMT
+### Personal Project Management & Productivity Dashboard
 
-A modern, responsive, web-based **Personal Project Management Application** designed exclusively for individual use. Built with a pure Vanilla JavaScript frontend, Supabase PostgreSQL database with Row Level Security (RLS), and an automated SMTP email reminder engine.
+<p align="center">
+  <strong>Plan. Organize. Track. Complete.</strong>
+  <br/>
+  A personal productivity workspace designed to bring projects, tasks, schedules, and deadlines together.
+</p>
 
----
-
-## 1. Technology Stack (Strict Requirements)
-
-- **Frontend:** HTML5, CSS3, Vanilla JavaScript (ES6+ Modules). No React, Next.js, Vue, Angular, TypeScript, or other frontend frameworks.
-- **Backend & Database:** 
-  - Supabase PostgreSQL database
-  - Supabase Authentication (Email/Password, persistent sessions)
-  - Supabase Row Level Security (RLS) on all user-owned tables
-- **Email Notifications:** 
-  - SMTP-based email notification system via Nodemailer
-  - Securely configured SMTP credentials via protected environment variables
-  - Automated scheduled execution mechanism running daily anchored to the `Asia/Kolkata` timezone
-  - Default notification recipient: `priyank.saxena.dev@gmail.com`
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Web%20Application-365B59?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Frontend-Vanilla%20JavaScript-F0DB4F?style=for-the-badge&logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/Backend-Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/Database-Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+  <img src="https://img.shields.io/badge/Hosting-Render-344F5E?style=for-the-badge&logo=render&logoColor=white" />
+</p>
 
 ---
 
-## 2. Implemented Core Features
+## ✨ Overview
 
-### Feature 1: Project & Task Management
-- **Projects:** Create and manage personal projects with Name, Description, Category (Development, Design, Personal, Research, Writing, Finance, General, Other), Priority (Low, Medium, High, Critical), Start Date, and Target/Deadline Date.
-- **Project Tasks:** Support multiple tasks per project with Task Name, Task Description, Start Date, Target/Deadline Date, Priority, and Completion Status.
-- **Interactive Checklists:** Users can mark tasks as completed with instant progress tracking, timeline calculations, and completion timestamps.
-- **Status Synchronization:** Completed projects and tasks automatically record historical entries into Supabase `completion_history`.
+**PRIMNGMT** (Personal Project Management) is a modern, responsive, web-based productivity application built exclusively for individual use.
 
-### Feature 2: To-Do List Management (Digital Sticky Notes Workspace)
-- **Three To-Do Cadences:** Daily To-Dos, Weekly To-Dos, and Monthly To-Dos.
-- **Sticky Notes Interface:**
-  - Modern card-based sticky note layout with subtle tilt angles (`-1.5deg` to `+1.6deg`) and adhesive tape graphics.
-  - Six delicate pastel color swatches: Warm Amber, Sunset Peach, Mint Herbal, Sky Azure, Soft Lavender, Rose Blush.
-  - Smooth hover elevation and orientation straightening (`0deg` tilt with elevated drop shadow).
-  - Stamped "COMPLETED" watermark badge with strikethrough typography upon completion.
-  - Responsive digital pinboard grid layout.
+It provides a centralized workspace to manage personal projects, organize tasks, maintain daily/weekly/monthly to-do lists, visualize schedules through interactive Gantt charts, monitor deadlines, and automatically receive email reminders.
 
-### Feature 3: Monthly Calendar
-- **Consolidated Monthly View:** Defaults to current month with `< Prev`, `Next >`, and `Today` quick navigation.
-- **Unified Scheduled Activities:** Concurrently displays Projects, Project Tasks, Daily To-Dos, Weekly To-Dos, and Monthly To-Dos.
-- **Color-Coded Identifiers:** Distinct badges for Projects (Purple), Tasks (Blue), Daily To-Dos (Green), Weekly To-Dos (Amber), and Monthly To-Dos (Rose).
-- **Anti-Overlap Handling:** Displays up to 3 activity pills per date cell plus a `+N more` expander badge.
-- **Interactive Modals:** Clicking any day opens the **Day View Drawer** listing all activities on that date; clicking an activity badge displays its full **Activity Detail Modal**.
-- **Highlighted Today Marker:** Today's date is accentuated with a primary badge and ring.
+Designed with a modern dark interface and a cloud-backed architecture, PRIMNGMT combines project organization, scheduling, productivity tracking, and automated notifications into one application.
 
-### Feature 4: Project Gantt Charts
-- **Dedicated Project Visualizations:** Switch between any personal project via the dropdown selector.
-- **Master Project Bar & Task Timeline Bars:** Visualizes the full project duration and all subordinate task spans.
-- **Three Timeline Zoom Scales:** Daily, Weekly, and Monthly views.
-- **Fixed Left Column & Horizontally Scrollable Timeline:** Task names, dates, and priorities remain visible while scrolling through date intervals.
-- **Vertical "TODAY" Line:** Red vertical indicator dynamically placed at today's coordinate in the `Asia/Kolkata` timezone.
-- **Status & Progress Coloring:** Completed (Emerald Green with checkmark), In Progress (Indigo), and Overdue (Red).
+### 🎯 Core Objectives
 
-### Feature 5: Automated SMTP Email Notifications
-- **Target Recipient:** `priyank.saxena.dev@gmail.com`
-- **Notification Rules:**
-  1. Exactly **2 days before the deadline** of any personal project.
-  2. Exactly **2 days before the deadline** of any project task.
-  3. Exactly **2 days before the deadline** of any daily, weekly, or monthly to-do.
-  4. If an item remains incomplete after its deadline, sends a daily overdue reminder email every day until marked completed.
-  5. Reminders stop immediately once the item is marked as completed in the dashboard.
-- **Deduplication & Idempotency:** Tracks deliveries in the Supabase `email_notification_logs` table (`UNIQUE(item_id, notification_type, reference_date)`), preventing duplicate notifications during repeated executions.
-- **Professional HTML Email Templates:** Responsive, branded layout with countdown or overdue banners, item metadata, project affiliation, and a direct link to the dashboard.
-
-### Feature 6: Completion Tracking History
-- **Persistent Historical Record:** Tracks all completed Projects, Tasks, Daily To-Dos, Weekly To-Dos, and Monthly To-Dos in Supabase `completion_history`.
-- **Reverse Chronological Ordering:** Most recently finished activities appear first.
-- **Detailed Metrics:** Displays item name, category/type, associated project name, original deadline, actual completion date/timestamp (IST), and timeliness performance badges ("On Time", "X Days Early", "X Days After Deadline").
-- **Type Filtering & Search:** Filter by activity type or search by title.
+- Centralize personal projects and everyday responsibilities.
+- Visualize project schedules, task dependencies in timelines, and deadlines.
+- Maintain structured daily, weekly, and monthly to-do lists.
+- Track completed activities with historical records and performance metrics.
+- Receive automated deadline and overdue email reminders.
+- Maintain persistent cloud data with Supabase authentication and Row Level Security.
 
 ---
 
-## 3. Directory Structure
+## 🌟 Key Features
 
+### 1. 📊 Interactive Productivity Dashboard
+
+- Centralized overview of personal projects and tasks.
+- Project and task completion metrics.
+- Pending, completed, and upcoming activity summaries.
+- Upcoming deadlines and important milestones.
+- Quick access to different productivity modules.
+
+### 2. 📁 Project & Task Management
+
+**Personal Project Management**
+
+Create and manage projects with:
+
+- Project name and description.
+- Category: Development, Design, Personal, Research, Writing, Finance, General, Other.
+- Priority: Low, Medium, High, Critical.
+- Start date and target/deadline date.
+- Project status and completion progress.
+
+**Project Task Management**
+
+- Create multiple tasks under individual projects.
+- Maintain task descriptions and deadlines.
+- Set task priorities and completion status.
+- Track task progress and completion timestamps.
+- Automatically synchronize completed activities with historical records.
+
+### 3. 📝 Digital Sticky Notes Workspace
+
+A visual to-do management system with three scheduling cadences:
+
+- Daily To-Dos
+- Weekly To-Dos
+- Monthly To-Dos
+
+**Sticky Notes Experience**
+
+- Card-based digital pinboard layout.
+- Six pastel colour variations:
+  - Warm Amber
+  - Sunset Peach
+  - Mint Herbal
+  - Sky Azure
+  - Soft Lavender
+  - Rose Blush
+- Subtle card rotation and hover elevation.
+- Adhesive tape-inspired visual styling.
+- Completed-note watermark and strikethrough typography.
+- Responsive pinboard grid.
+
+### 4. 📅 Interactive Monthly Calendar
+
+A consolidated calendar that displays all scheduled activities in one place.
+
+**Calendar Capabilities**
+
+- Defaults to the current month.
+- Previous month, next month, and Today navigation.
+- Unified display of:
+  - Projects
+  - Project Tasks
+  - Daily To-Dos
+  - Weekly To-Dos
+  - Monthly To-Dos
+- Colour-coded activity identifiers:
+  - Projects — Purple
+  - Tasks — Blue
+  - Daily To-Dos — Green
+  - Weekly To-Dos — Amber
+  - Monthly To-Dos — Rose
+- Displays up to three activity pills per date with a `+N more` expander.
+- Interactive Day View Drawer.
+- Activity Detail Modal.
+- Highlighted current-day marker.
+
+### 5. 📈 Interactive Project Gantt Charts
+
+Visualize project timelines and monitor task progress through dedicated Gantt charts.
+
+**Timeline Features**
+
+- Switch between projects using a project selector.
+- Master project duration bar.
+- Individual task timeline bars.
+- Three timeline scales:
+  - Daily
+  - Weekly
+  - Monthly
+- Fixed task information column.
+- Horizontally scrollable timeline.
+- Dynamic vertical TODAY indicator using the `Asia/Kolkata` timezone.
+
+**Visual Status Indicators**
+
+| Status | Visualization |
+|---|---|
+| Completed | Emerald Green with checkmark |
+| In Progress | Indigo |
+| Overdue | Red |
+
+### 6. 📧 Automated Email Notification Engine
+
+PRIMNGMT includes an automated email reminder engine powered by Node.js, Nodemailer, and Supabase notification logs.
+
+**Default Notification Recipient**
+
+`priyank.saxena.dev@gmail.com`
+
+**Notification Rules**
+
+| Trigger | Email Behaviour |
+|---|---|
+| Project deadline | Reminder exactly 2 days before |
+| Project task deadline | Reminder exactly 2 days before |
+| Daily To-Do deadline | Reminder exactly 2 days before |
+| Weekly To-Do deadline | Reminder exactly 2 days before |
+| Monthly To-Do deadline | Reminder exactly 2 days before |
+| Incomplete overdue item | Daily reminder until completed |
+| Completed item | Further reminders stop immediately |
+
+**Reliability & Delivery**
+
+- Automated daily notification execution.
+- Scheduling anchored to `Asia/Kolkata` (IST).
+- Professional responsive HTML email templates.
+- Countdown and overdue notification banners.
+- Item metadata and associated project information.
+- Direct dashboard links in notification emails.
+- Supabase-based notification delivery tracking.
+- Deduplication and idempotency protection.
+
+**Notification Deduplication**
+
+The `email_notification_logs` table uses a unique constraint:
+
+```sql
+UNIQUE(item_id, notification_type, reference_date)
 ```
+
+This prevents duplicate notification deliveries when the scheduler executes repeatedly for the same item and notification date.
+
+### 7. 🏆 Completion Tracking History
+
+Maintain a persistent historical record of completed activities.
+
+**History Features**
+
+- Completed projects.
+- Completed project tasks.
+- Completed daily, weekly, and monthly to-dos.
+- Reverse chronological ordering.
+- Original deadline and actual completion timestamp.
+- Associated project information.
+- IST-based completion timestamps.
+
+**Timeliness Performance**
+
+| Badge | Meaning |
+|---|---|
+| On Time | Completed by the deadline |
+| X Days Early | Completed before the deadline |
+| X Days After Deadline | Completed after the deadline |
+
+Additional capabilities include activity-type filtering and title-based search.
+
+### 8. 🎨 Modern Midnight-Inspired UI
+
+- Eye-comfort dark interface.
+- Muted teal and sage colour palette.
+- Animated gradient backgrounds.
+- Smooth card transitions and hover effects.
+- Subtle theme-matched glow effects.
+- Custom scrollbars.
+- Interactive pill tabs and modals.
+- Responsive layouts.
+
+---
+
+## 🛠️ Technology Stack
+
+PRIMNGMT follows a lightweight architecture with no frontend frameworks.
+
+| Layer | Technology | Responsibility |
+|---|---|---|
+| Frontend | HTML5 | Application structure |
+| Styling | CSS3 | Layout, animations, responsive design |
+| Frontend Logic | Vanilla JavaScript ES6+ Modules | Application functionality |
+| Backend | Node.js | Server-side runtime |
+| Database | Supabase PostgreSQL | Persistent application storage |
+| Authentication | Supabase Auth | Email/password authentication |
+| Database Security | Supabase RLS | User-level data isolation |
+| Email Engine | Nodemailer | SMTP email delivery |
+| Scheduling | Node.js Cron / GitHub Actions | Automated notification execution |
+| Hosting | Render | Web application deployment |
+| Version Control | Git & GitHub | Source code management |
+
+**Frontend architecture restriction:** No React, Next.js, Vue, Angular, TypeScript, or other frontend frameworks.
+
+---
+
+## 🏗️ Application Architecture
+
+```mermaid
+flowchart TD
+    U[User] --> UI[PRIMNGMT Web Dashboard]
+
+    UI --> AUTH[Supabase Authentication]
+    UI --> API[JavaScript Database API]
+
+    API --> DB[(Supabase PostgreSQL)]
+    DB --> RLS[Row Level Security]
+
+    SCHED[Daily Notification Scheduler] --> DB
+    SCHED --> LOG[Notification Logs]
+    SCHED --> MAIL[Nodemailer Email Service]
+
+    MAIL --> SMTP[SMTP Provider]
+    SMTP --> INBOX[Notification Recipient]
+
+    UI --> HOST[Render Web Service]
+```
+
+### Architecture Highlights
+
+- Vanilla JavaScript frontend.
+- Supabase-powered authentication and database.
+- Row Level Security for user-owned records.
+- Server-side scheduled notification execution.
+- Environment-based credential management.
+- Separate notification delivery and logging components.
+
+---
+
+## 📂 Project Directory Structure
+
+```text
 PersonalProjectManagement/
-├── index.html                  # Single-Page Application HTML shell
-├── server.js                   # Lightweight Node.js local web server
-├── package.json                # Project dependencies & automation scripts
-├── .env.example                # Template for environment variables
-├── .env                        # Active environment configuration
-├── README.md                   # Complete documentation & setup instructions
+│
+├── index.html
+├── server.js
+├── package.json
+├── package-lock.json
+│
+├── .env.example
+├── .gitignore
+├── README.md
+│
 ├── css/
-│   ├── main.css                # Base layout, typography, sidebar, topbar, theme variables
-│   ├── components.css          # Buttons, forms, modals, toasts, badges, tabs
-│   ├── auth.css                # Sign In / Sign Up styling
-│   ├── dashboard.css           # Metric cards, split overview, quick launch shortcuts
-│   ├── projects.css            # Master-detail split, project cards, task checklists
-│   ├── todos.css               # Digital sticky notes pinboard, tilt angles, tape graphics
-│   ├── calendar.css            # Monthly calendar grid, weekday headers, activity pills
-│   ├── gantt.css               # Fixed task column, scrollable timeline, daily/weekly/monthly scales
-│   └── history.css             # Reverse chronological activity feed, timeliness badges
+│   ├── main.css
+│   ├── components.css
+│   ├── auth.css
+│   ├── dashboard.css
+│   ├── projects.css
+│   ├── todos.css
+│   ├── calendar.css
+│   ├── gantt.css
+│   └── history.css
+│
 ├── js/
-│   ├── app.js                  # SPA router, view lifecycle & shell state
-│   ├── config.js               # Supabase client initialization
-│   ├── auth.js                 # Supabase Authentication handler
-│   ├── api.js                  # Database CRUD queries with Row Level Security
+│   ├── app.js
+│   ├── config.js
+│   ├── auth.js
+│   ├── api.js
+│   │
 │   ├── views/
-│   │   ├── dashboard.js        # Dashboard metrics & upcoming deadlines
-│   │   ├── projects.js         # Projects & tasks manager
-│   │   ├── todos.js            # Sticky notes workspace
-│   │   ├── calendar.js         # Monthly calendar engine
-│   │   ├── gantt.js            # Gantt chart timeline engine
-│   │   └── history.js          # Completion tracking history
+│   │   ├── dashboard.js
+│   │   ├── projects.js
+│   │   ├── todos.js
+│   │   ├── calendar.js
+│   │   ├── gantt.js
+│   │   └── history.js
+│   │
 │   └── utils/
-│       ├── date-utils.js       # Asia/Kolkata date calculations & matrix generators
-│       └── notifications.js    # In-app toast alerts
+│       ├── date-utils.js
+│       └── notifications.js
+│
 ├── backend/
-│   ├── email-service.js        # Nodemailer SMTP transporter & HTML email builder
-│   ├── scheduler.js            # Automated daily notification runner (cron & CLI)
-│   ├── test-email.js           # CLI script to test SMTP email delivery
-│   └── verify-db.js            # Comprehensive end-to-end integration test
+│   ├── email-service.js
+│   ├── scheduler.js
+│   ├── test-email.js
+│   └── verify-db.js
+│
 └── supabase/
-    └── schema.sql              # Supabase PostgreSQL relational schema & RLS policies
+    └── schema.sql
 ```
+
+*Directory structure represents the documented application architecture. Adjust it if your repository contains additional files or different names.*
 
 ---
 
-## 4. Supabase Database Setup & Schema
+## 🗄️ Supabase Database Setup
 
-The database schema is fully defined in [`supabase/schema.sql`](file:///C:/Users/pc/Documents/PersonalProjectManagement/supabase/schema.sql).
+PRIMNGMT uses Supabase PostgreSQL for persistent cloud storage and Supabase Authentication for account management.
 
-### Tables Created:
-1. `public.projects`: Core project records with `start_date`, `target_date`, `priority`, and `status`.
-2. `public.project_tasks`: Child tasks referencing `projects(id)` with `ON DELETE CASCADE`.
-3. `public.todos`: Sticky notes with `type` (`daily`, `weekly`, `monthly`), `color`, `priority`, and `target_date`.
-4. `public.completion_history`: Historical log of all completed items with completion timestamps and timeliness.
-5. `public.email_notification_logs`: Idempotency tracking table with unique constraints on `(item_id, notification_type, reference_date)`.
+### Database Tables
 
-### Row Level Security (RLS):
-Row Level Security is enabled on every table. Users only have access to records where `auth.uid() = user_id`. The background notification scheduler uses the `SUPABASE_SERVICE_ROLE_KEY` to execute cross-record scheduled checks.
+| Table | Purpose |
+|---|---|
+| `projects` | Personal project records |
+| `project_tasks` | Project-related tasks |
+| `todos` | Daily, weekly, and monthly to-do records |
+| `completion_history` | Completed activity history |
+| `email_notification_logs` | Notification delivery tracking and deduplication |
 
-To apply or re-run the schema via Supabase CLI:
+### Row Level Security (RLS)
+
+RLS is enabled on all user-owned tables.
+
+The access policy ensures that users can only access records associated with their authenticated identity:
+
+```sql
+auth.uid() = user_id
+```
+
+The background notification scheduler uses the Supabase service-role key for authorized server-side operations.
+
+**Security:** The service-role key must never be exposed in frontend JavaScript or committed to GitHub.
+
+### Apply Database Schema
+
+Use the Supabase SQL Editor to execute:
+
+```text
+supabase/schema.sql
+```
+
+Alternatively, use the Supabase CLI if your project is linked and your installed CLI supports the command:
+
 ```bash
 supabase db query --linked -f supabase/schema.sql
 ```
 
 ---
 
-## 5. Environment Configuration
+## ⚙️ Getting Started
 
-Create a `.env` file in the project root (copied from `.env.example`):
+### Prerequisites
 
-```ini
-# Supabase Configuration
-SUPABASE_URL="https://nypswixefpidztdvcmbc.supabase.co"
-SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+Install the following:
 
-# Notification Recipient
-NOTIFICATION_RECIPIENT="priyank.saxena.dev@gmail.com"
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
+- [Git](https://git-scm.com/)
+- [Supabase Account](https://supabase.com/)
 
-# SMTP Email Configuration (Gmail, Resend, Sendgrid, Mailgun, AWS SES, or any SMTP provider)
-# If left blank, automatically generates an Ethereal test account with an instant preview URL
-SMTP_HOST="smtp.gmail.com"
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER="priyank.saxena.dev@gmail.com"
-SMTP_PASS="your-16-character-google-app-password"
-SMTP_FROM="Personal Project Flow <priyank.saxena.dev@gmail.com>"
+### 1. Clone the Repository
 
-# Application URL (used in email buttons)
-APP_URL="http://localhost:3000"
+```bash
+git clone https://github.com/YOUR_USERNAME/PRIMNGMT.git
+cd PRIMNGMT
 ```
 
----
+### 2. Install Dependencies
 
-## 6. How to Run Locally
-
-### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Start the Frontend Application
+### 3. Configure Environment Variables
+
+Create a `.env` file in the project root using `.env.example` as the template.
+
+```env
+# Supabase Configuration
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+
+# Notification Recipient
+NOTIFICATION_RECIPIENT=your-email@example.com
+
+# SMTP Configuration
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=
+SMTP_PASS=
+SMTP_FROM=
+
+# Application Configuration
+APP_URL=http://localhost:3000
+```
+
+Configure the actual values from your Supabase project and email provider.
+
+**Never commit `.env` to GitHub.**
+
+### 4. Start the Application
+
 ```bash
 npm start
 ```
-The dashboard will be available at: **http://localhost:3000**
 
-You can sign in with:
-- **Email:** `priyank.saxena.dev@gmail.com` (or create a new personal account on the login page)
-- **Password:** `TestPassword123!` (or your chosen password)
+Open:
 
-### 3. Run Automated Email Notifications
-- **Execute On-Demand (Single Run):**
-  ```bash
-  npm run notify
-  ```
-- **Run as a Daily Scheduled Daemon (09:00 AM IST daily):**
-  ```bash
-  npm run notify:cron
-  ```
-- **Send a Test Email:**
-  ```bash
-  npm run test:email
-  ```
-- **Run End-to-End Database Verification Test:**
-  ```bash
-  npm run db:verify
-  ```
+```text
+http://localhost:3000
+```
+
+Sign in using your configured Supabase account.
 
 ---
 
-## 7. Automated Email Scheduling Options for Production
+## 📬 Email Notification Setup
 
-To run the automated notification job on a scheduled basis in production:
+### Local Gmail SMTP Configuration
 
-1. **Option A: GitHub Actions (Free Tier Cron)**
-   Create `.github/workflows/daily-reminders.yml`:
-   ```yaml
-   name: Daily Deadline Notifications
-   on:
-     schedule:
-       - cron: '30 3 * * *' # 09:00 AM IST (03:30 UTC)
-     workflow_dispatch:
-   jobs:
-     notify:
-       runs-on: ubuntu-latest
-       steps:
-         - uses: actions/checkout@v4
-         - uses: actions/setup-node@v4
-           with:
-             node-version: 20
-         - run: npm ci
-         - run: npm run notify
-           env:
-             SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-             SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-             SMTP_HOST: ${{ secrets.SMTP_HOST }}
-             SMTP_PORT: ${{ secrets.SMTP_PORT }}
-             SMTP_USER: ${{ secrets.SMTP_USER }}
-             SMTP_PASS: ${{ secrets.SMTP_PASS }}
-             NOTIFICATION_RECIPIENT: priyank.saxena.dev@gmail.com
-   ```
+For local development, Gmail SMTP can be configured using a Google App Password where eligible.
 
-2. **Option B: Cron on VPS / Render / Railway / Fly.io**
-   Run `npm run notify:cron` as a background background worker or container.
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-google-app-password
+SMTP_FROM=PRIMNGMT <your-email@gmail.com>
+```
+
+Do not use your regular Gmail password.
+
+### Email Testing
+
+Run:
+
+```bash
+npm run test:email
+```
+
+### Execute Notification Scheduler Manually
+
+```bash
+npm run notify
+```
+
+### Run Daily Scheduler Locally
+
+```bash
+npm run notify:cron
+```
+
+The daily scheduler is configured for 09:00 AM IST.
+
+---
+
+## ☁️ Production Deployment
+
+PRIMNGMT can be deployed using Render and GitHub Actions.
+
+### A. Web Application — Render
+
+Recommended Render Web Service configuration:
+
+| Setting | Value |
+|---|---|
+| Service Type | Web Service |
+| Runtime | Node.js |
+| Branch | `main` |
+| Build Command | `npm install` |
+| Start Command | `npm start` |
+| Instance | Free |
+
+The Node.js server must listen on the Render-provided `PORT` and bind to `0.0.0.0`.
+
+Configure production environment variables in the Render dashboard.
+
+**Important Render Free considerations:**
+
+- Free web services spin down after periods of inactivity.
+- The local filesystem is ephemeral; persistent records must remain in Supabase.
+- Outbound SMTP ports 25, 465, and 587 are blocked on free instances.
+
+For production email delivery, use a compatible SMTP relay on a supported port, or an HTTPS-based email API. Verify provider availability, sending limits, and connectivity before deployment.
+
+### B. Daily Email Notifications — GitHub Actions
+
+GitHub Actions can execute the notification scheduler independently of the Render web service.
+
+Create:
+
+```text
+.github/workflows/daily-reminders.yml
+```
+
+Add:
+
+```yaml
+name: Daily Deadline Notifications
+
+on:
+  schedule:
+    - cron: '30 3 * * *' # 09:00 AM IST (03:30 UTC)
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Execute notification scheduler
+        run: npm run notify
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          NOTIFICATION_RECIPIENT: ${{ secrets.NOTIFICATION_RECIPIENT }}
+          APP_URL: ${{ secrets.APP_URL }}
+          TZ: Asia/Kolkata
+```
+
+Add the required credentials through:
+
+**GitHub Repository → Settings → Secrets and variables → Actions → New repository secret**
+
+Do not hardcode credentials in the workflow file.
+
+**Scheduling note:** GitHub Actions scheduled workflows use UTC. The above cron expression corresponds to 09:00 AM IST. GitHub scheduled runs can be delayed, and public repositories may have scheduled workflows disabled after prolonged inactivity. Check the workflow run history to verify successful executions.
+
+### Production Scheduling Recommendation
+
+Use:
+
+- **Render:** Host the web application.
+- **GitHub Actions:** Run the daily notification job.
+- **Supabase:** Store application records and notification logs.
+- **Email provider:** Deliver production notification emails.
+
+The web application and notification scheduler are separate processes, so a sleeping Render web service does not need to be awake for a GitHub Actions notification run.
+
+---
+
+## 🔐 Security Practices
+
+- Never commit `.env` or private credentials.
+- Keep the Supabase service-role key server-side.
+- Apply RLS policies to all user-owned database tables.
+- Validate user input before database operations.
+- Use secure authentication and persistent sessions.
+- Use HTTPS for production access.
+- Store GitHub Actions secrets in repository settings.
+- Keep email credentials private.
+- Protect scheduled notification operations from duplicate execution.
+
+---
+
+## 🧪 Verification & Testing
+
+PRIMNGMT includes dedicated scripts for checking database integration and email functionality.
+
+| Command | Purpose |
+|---|---|
+| `npm start` | Start the application |
+| `npm run test:email` | Verify email configuration |
+| `npm run notify` | Execute a notification cycle |
+| `npm run notify:cron` | Start the local daily scheduler |
+| `npm run db:verify` | Run database integration verification |
+
+---
+
+## 🗺️ Future Enhancements
+
+Potential improvements for future releases:
+
+- [ ] Advanced productivity analytics.
+- [ ] Enhanced Gantt timeline interactions.
+- [ ] Exportable project reports.
+- [ ] Additional calendar visualizations.
+- [ ] Improved mobile experience.
+- [ ] More flexible reminder configuration.
+
+---
+
+## 🤝 Contributions & Feedback
+
+PRIMNGMT is designed as an individual productivity application.
+
+Suggestions, bug reports, and improvements are welcome.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Submit a pull request.
+
+---
+
+## 👨‍💻 Author
+
+**Priyank Saxena**
+
+- GitHub: [@PriyankV25](https://github.com/PriyankV25)
+- LinkedIn: [Priyank Saxena](https://www.linkedin.com/in/priyanksaxenaps/)
+- Portfolio: [Personal Portfolio](https://priyank-saxena-portfolio.onrender.com/)
+- Dev Community: [@priyank_dev](https://dev.to/priyank_dev)
+
+---
+
+## 📄 License
+
+Choose and add a license file before distributing this project. No license is implied by this README alone.
+
+---
+
+<p align="center">
+  <strong>PRIMNGMT</strong>
+  <br/>
+  Your projects. Your priorities. Your progress.
+  <br/><br/>
+  Built with ❤️ by Priyank Saxena.
+</p>

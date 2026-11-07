@@ -3,45 +3,67 @@
    SaaS Aesthetic, Modern Color Palette, Smooth Typography & Layout
    ============================================================================== */
 
+
 :root {
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
-  /* Brand Theme Colors */
-  --color-primary: #6366f1;
-  --color-primary-hover: #4f46e5;
-  --color-primary-light: #eef2ff;
-  
-  --color-bg-app: #f8fafc;
-  --color-bg-surface: #ffffff;
-  --color-bg-sidebar: #0f172a;
-  --color-bg-sidebar-hover: #1e293b;
-  --color-bg-sidebar-active: #334155;
+  --font-sans: -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-  --color-text-main: #0f172a;
-  --color-text-secondary: #64748b;
-  --color-text-muted: #94a3b8;
-  --color-text-inverse: #f8fafc;
+  /* Midnight Flow — Brand */
+  --color-primary: #6F9991;
+  --color-primary-hover: #5B827A;
+  --color-primary-light: #DCE7E2;
 
-  --color-border: #e2e8f0;
-  --color-border-light: #f1f5f9;
+  /* Backgrounds */
+  --color-bg-app: #E5E8E2;
+  --color-bg-surface: #F0F1EB;
+  --color-bg-sidebar: #18232D;
+  --color-bg-sidebar-hover: #293943;
+  --color-bg-sidebar-active: #354A53;
 
-  /* Priority / Status Accents */
-  --color-critical: #ef4444;
-  --color-high: #f97316;
-  --color-medium: #eab308;
-  --color-low: #10b981;
+  /* Text */
+  --color-text-main: #26343A;
+  --color-text-secondary: #697A7D;
+  --color-text-muted: #899696;
+  --color-text-inverse: #E9EFEB;
 
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --color-info: #0284c7;
+  /* Borders */
+  --color-border: #D1D9D3;
+  --color-border-light: #DEE3DC;
 
-  /* Elevation Shadows */
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  /* Muted priority colours */
+  --color-critical: #B96F70;
+  --color-high: #BE8B69;
+  --color-medium: #B6A16C;
+  --color-low: #729789;
+
+  --color-success: #729789;
+  --color-warning: #B6A16C;
+  --color-danger: #B96F70;
+  --color-info: #718FA2;
+
+  /* Subtle elevation */
+  --shadow-xs: 0 1px 2px rgba(30, 45, 48, .04);
+  --shadow-sm: 0 2px 5px rgba(30, 45, 48, .05);
+  --shadow-md: 0 5px 14px rgba(30, 45, 48, .07);
+  --shadow-lg: 0 12px 28px rgba(30, 45, 48, .09);
+  --shadow-xl: 0 20px 40px rgba(30, 45, 48, .12);
+
+  /* Brand gradients */
+  --gradient-brand: linear-gradient(
+    135deg, #789D93, #607E8A
+  );
+
+  --gradient-sidebar: linear-gradient(
+    160deg, #18232D, #202F39, #263C43
+  );
+
+  --gradient-surface: linear-gradient(
+    145deg, #F1F2EC, #E9EDE7
+  );
+
+  --gradient-accent: linear-gradient(
+    120deg, #789D93, #718FA2
+  );
 
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -50,9 +72,86 @@
 
   --sidebar-width: 250px;
   --header-height: 64px;
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.25s ease;
+
+  --transition-fast: .15s ease;
+  --transition-normal: .25s ease;
 }
+
+
+/* ==========================================
+   MIDNIGHT FLOW — AMBIENT BACKGROUND
+   ========================================== */
+
+.main-content-scroll {
+  position: relative;
+  isolation: isolate;
+  background-color: var(--color-bg-app);
+
+  background-image:
+    radial-gradient(
+      ellipse at 10% 10%,
+      rgba(111, 153, 145, 0.13),
+      transparent 42%
+    ),
+    radial-gradient(
+      ellipse at 90% 80%,
+      rgba(113, 143, 162, 0.12),
+      transparent 45%
+    );
+
+  background-size: 150% 150%;
+  animation: ambientFlow 24s ease-in-out infinite alternate;
+}
+
+@keyframes ambientFlow {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 50% 40%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Keep dashboard cards readable */
+.top-header {
+  background: rgba(240, 241, 235, 0.94);
+  backdrop-filter: blur(12px);
+}
+
+/* Refined sidebar */
+.sidebar {
+  background: var(--gradient-sidebar);
+}
+
+/* Soft brand buttons */
+.btn-primary {
+  background: var(--gradient-brand);
+  border: none;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(75, 112, 105, .2);
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .main-content-scroll {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -114,11 +213,13 @@ html, body {
 }
 
 .logo-brand h1 {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #a5b4fc 0%, #ffffff 100%);
+  background: linear-gradient(
+    135deg,
+    #A9C5BE 0%,
+    #DCE7E2 100%
+  );
   -webkit-background-clip: text;
+    background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -186,7 +287,7 @@ html, body {
   align-items: center;
   gap: 10px;
 }
-
+/* 
 .user-avatar {
   width: 34px;
   height: 34px;
@@ -199,6 +300,14 @@ html, body {
   font-weight: 700;
   font-size: 14px;
   flex-shrink: 0;
+} */
+
+.user-avatar {
+  background: linear-gradient(
+    135deg,
+    #789D93,
+    #607E8A
+  );
 }
 
 .user-meta {
