@@ -1,3 +1,4 @@
+
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
@@ -7,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3000;
+const HOST = '0.0.0.0';
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -15,67 +17,144 @@ const MIME_TYPES = {
   '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+  '.gif': 'image/gif',
   '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.ttf': 'font/ttf'
 };
 
-const server = http.createServer((req, res) => {
-  // CORS Headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+// Directories and files that must never be publicly served.
+const BLOCKED_PATHS = [
+  '.env',
+  '.git',
+  '.github',
+  'node_modules',
+  'backend',
+  'supabase',
+  'package.json',
+  'package-lock.json',
+  'server.js',
+  'README.md'
+];
 
-  if (req.method === 'OPTIONS') {
-    res.writeHead(200);
-    res.end();
+const server = http.createServer((req, res) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.writeHead(405, { 'Content-Type': 'text/plain' });
+    res.end('405 Method Not Allowed');
     return;
   }
 
-  let reqUrl = req.url.split('?')[0];
-  if (reqUrl === '/') reqUrl = '/index.html';
+  let pathname;
 
-  const safePath = path.normalize(reqUrl).replace(/^(\.\.[\/\\])+/, '');
-  const filePath = path.join(__dirname, safePath);
+  try {
+    pathname = decodeURIComponent(
+      new URL(req.url, `http://${req.headers.host || 'localhost'}`).pathname
+    );
+  } catch {
+    res.writeHead(400, { 'Content-Type': 'text/plain' });
+    res.end('400 Bad Request');
+    return;
+  }
+
+  if (pathname.includes('\0')) {
+    res.writeHead(400);
+    res.end('400 Bad Request');
+    return;
+  }
+
+  if (pathname === '/') {
+    pathname = '/index.html';
+  }
+
+  const normalizedPath = path.normalize(pathname).replace(/^([/\\])+/, '');
+  const filePath = path.resolve(__dirname, normalizedPath);
+  const relativePath = path.relative(__dirname, filePath);
+
+  // Prevent requests from escaping the project directory.
+  if (
+    relativePath.startsWith('..') ||
+    path.isAbsolute(relativePath)
+  ) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.end('403 Forbidden');
+    return;
+  }
+
+  // Block private files and backend-only directories.
+  const pathSegments = relativePath.split(path.sep);
+
+  const isBlocked = pathSegments.some(segment =>
+    BLOCKED_PATHS.includes(segment) ||
+    segment.startsWith('.env')
+  );
+
+  if (isBlocked) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.end('403 Forbidden');
+    return;
+  }
 
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
-      // Fallback to index.html for SPA routing if path doesn't have extension
-      if (!path.extname(reqUrl)) {
+      // SPA fallback for routes without file extensions.
+      if (!path.extname(pathname)) {
         const indexPath = path.join(__dirname, 'index.html');
+
         fs.readFile(indexPath, (indexErr, content) => {
           if (indexErr) {
-            res.writeHead(404, { 'Content-Type': 'text/plain' });
-            res.end('404 Not Found');
-          } else {
-            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-            res.end(content);
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('500 Internal Server Error');
+            return;
           }
+
+          res.writeHead(200, {
+            'Content-Type': 'text/html; charset=utf-8'
+          });
+
+          res.end(req.method === 'HEAD' ? undefined : content);
         });
+
         return;
       }
 
       res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end(`404 Not Found: ${reqUrl}`);
+      res.end('404 Not Found');
       return;
     }
 
     const ext = path.extname(filePath).toLowerCase();
-    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+    const contentType =
+      MIME_TYPES[ext] || 'application/octet-stream';
 
     fs.readFile(filePath, (readErr, content) => {
       if (readErr) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('500 Internal Server Error');
-      } else {
-        res.writeHead(200, { 'Content-Type': contentType });
-        res.end(content);
+        return;
       }
+
+      res.writeHead(200, {
+        'Content-Type': contentType
+      });
+
+      res.end(req.method === 'HEAD' ? undefined : content);
     });
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`\n======================================================`);
-  console.log(`Personal Project Management Platform is running!`);
-  console.log(`Local Dashboard URL: http://localhost:${PORT}`);
-  console.log(`======================================================\n`);
+server.listen(PORT, HOST, () => {
+  console.log('\n======================================================');
+  console.log('PRIMNGMT is running!');
+  console.log(`Local Dashboard: http://localhost:${PORT}`);
+  console.log(`Server Host: ${HOST}`);
+  console.log('======================================================\n');
+});
+
+server.on('error', error => {
+  console.error('[Server Error]:', error);
+  process.exit(1);
 });
