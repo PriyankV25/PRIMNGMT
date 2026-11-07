@@ -1,0 +1,286 @@
+/* ==============================================================================
+   TO-DO LIST MANAGEMENT: DIGITAL STICKY NOTES WORKSPACE (Feature 2)
+   Modern Card-Based Sticky Notes, Dynamic Tilt, Tape Effect, Completed Stamp
+   ============================================================================== */
+
+.todos-workspace-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Tabs Bar */
+.sticky-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+}
+
+.sticky-nav-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sticky-tab {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--transition-fast);
+}
+
+.sticky-tab:hover {
+  border-color: #cbd5e1;
+  color: var(--color-text-main);
+  background-color: #f8fafc;
+}
+
+.sticky-tab.active {
+  background-color: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Digital Pinboard Grid */
+.sticky-pinboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+  gap: 28px;
+  padding: 12px 6px;
+}
+
+/* Individual Sticky Note Card */
+.sticky-note-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+  padding: 24px 20px 18px 20px;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  transform: rotate(var(--tilt-angle, 0deg));
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease, opacity 0.25s ease;
+  overflow: hidden;
+  cursor: default;
+}
+
+.sticky-note-card:hover {
+  transform: rotate(0deg) translateY(-6px) scale(1.02);
+  box-shadow: 0 14px 25px -4px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+/* Adhesive Tape Graphic at top */
+.sticky-pin-strip {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.55);
+  border: 1px dashed rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  pointer-events: none;
+}
+
+/* Sticky Palette Colors */
+.sticky-color-yellow {
+  background: #fef08a; /* Soft amber */
+  border: 1px solid #fde047;
+  color: #713f12;
+}
+
+.sticky-color-peach {
+  background: #fed7aa; /* Sunset peach */
+  border: 1px solid #fdba74;
+  color: #7c2d12;
+}
+
+.sticky-color-green {
+  background: #bbf7d0; /* Mint green */
+  border: 1px solid #86efac;
+  color: #14532d;
+}
+
+.sticky-color-blue {
+  background: #bae6fd; /* Sky azure */
+  border: 1px solid #7dd3fc;
+  color: #0c4a6e;
+}
+
+.sticky-color-purple {
+  background: #ddd6fe; /* Soft lavender */
+  border: 1px solid #c4b5fd;
+  color: #4c1d95;
+}
+
+.sticky-color-pink {
+  background: #fbcfe8; /* Rose blush */
+  border: 1px solid #f9a8d4;
+  color: #831843;
+}
+
+/* Top bar: Type pill & priority */
+.sticky-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.sticky-type-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+
+.sticky-priority-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Note Body Content */
+.sticky-body {
+  flex: 1;
+  margin-bottom: 14px;
+}
+
+.sticky-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+}
+
+.sticky-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.88;
+  white-space: pre-line;
+  word-break: break-word;
+}
+
+/* Stamped Completed Watermark */
+.completed-stamp {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-14deg);
+  border: 3px solid #16a34a;
+  color: #16a34a;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  padding: 6px 16px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  opacity: 0.85;
+  pointer-events: none;
+  background-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.is-completed {
+  opacity: 0.72;
+}
+
+.completed-text {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* Sticky Footer */
+.sticky-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.15);
+  font-size: 12px;
+}
+
+.sticky-footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sticky-date {
+  font-weight: 600;
+}
+
+.sticky-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Interactive Checkbox on Sticky Note */
+.sticky-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.sticky-chk {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  accent-color: #0f172a;
+}
+
+.sticky-hover-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0.4;
+  transition: opacity var(--transition-fast);
+}
+
+.sticky-note-card:hover .sticky-hover-actions {
+  opacity: 1;
+}
+
+/* Empty Pinboard State */
+.empty-pinboard-state {
+  grid-column: 1 / -1;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-pinboard-card {
+  max-width: 440px;
+  margin: 0 auto;
+  background: var(--color-bg-surface);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 40px 30px;
+}
+
+.empty-pinboard-card .pin-graphic {
+  font-size: 36px;
+  display: block;
+  margin-bottom: 12px;
+}
