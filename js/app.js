@@ -9,6 +9,7 @@ import { renderTodos, openTodoModal } from './views/todos.js';
 import { renderCalendar } from './views/calendar.js';
 import { renderGantt } from './views/gantt.js';
 import { renderHistory } from './views/history.js';
+import { renderNotes, openNoteEditorModal } from './views/notes.js';
 import { showToast } from './utils/notifications.js';
 
 let currentView = 'dashboard';
@@ -75,6 +76,9 @@ export function navigateTo(viewName, param = null) {
     case 'history':
       renderHistory(mainContent);
       break;
+    case 'notes':
+      renderNotes(mainContent, param);
+      break;
     default:
       renderDashboard(mainContent);
   }
@@ -84,6 +88,7 @@ export function navigateTo(viewName, param = null) {
     dashboard: 'Dashboard',
     projects: 'Projects & Tasks',
     todos: 'Sticky To-Dos',
+    notes: 'Notes Workspace',
     calendar: 'Monthly Calendar',
     gantt: 'Gantt Charts',
     history: 'Completion History'
@@ -448,6 +453,11 @@ function initGlobalEventListeners() {
   window.addEventListener('app:open-todo-modal', () => {
     const mainContent = document.getElementById('main-content-view');
     openTodoModal(null, mainContent);
+  });
+
+  window.addEventListener('app:open-note-modal', (e) => {
+    const mainContent = document.getElementById('main-content-view');
+    openNoteEditorModal(e?.detail?.note || null, mainContent, e?.detail?.defaultProjectId || null);
   });
 }
 

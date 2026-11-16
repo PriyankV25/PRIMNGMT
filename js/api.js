@@ -425,3 +425,270 @@ export async function fetchAllActivities() {
 
   return { projects, tasks, todos, history };
 }
+
+// ==============================================================================
+// 6. NOTES WORKSPACE (Feature: Markdown Knowledge Management)
+// ==============================================================================
+
+/**
+ * Fetch notes with optional filtering and sorting
+ * @param {Object} options
+ * @param {string} [options.category] - Filter by category ('all' or specific name)
+ * @param {string} [options.tag] - Filter by tag ('all' or specific tag)
+ * @param {string} [options.projectId] - Filter by project ('all', 'none', or UUID)
+ * @param {string} [options.search] - Search term matching title or content
+ * @param {string} [options.sort] - 'updated_desc' | 'updated_asc' | 'created_desc' | 'created_asc' | 'title_asc' | 'title_desc'
+ */
+export async function fetchNotes({ category = 'all', tag = 'all', projectId = 'all', search = '', sort = 'updated_desc' } = {}) {
+  const supabase = getClient();
+  let query = supabase
+    .from('notes')
+    .select('*, projects(id, name, category, status)');
+
+  // Category filter
+  if (category && category !== 'all') {
+    query = query.eq('category', category);
+  }
+
+  // Project filter
+  if (projectId && projectId !== 'all') {
+    if (projectId === 'none') {
+      query = query.is('project_id', null);
+    } else {
+      query = query.eq('project_id', projectId);
+    }
+  }
+
+  // Tag filter using PostgreSQL array contains
+  if (tag && tag !== 'all') {
+    query = query.contains('tags', [tag]);
+  }
+
+  // Text search on title or content
+  const cleanSearch = search.trim();
+  if (cleanSearch) {
+    // Sanitize search term to prevent Supabase filter injection
+    const escaped = cleanSearch.replace(/[,()]/g, '');
+    if (escaped) {
+      query = query.or(`title.ilike.%${escaped}%,content.ilike.%${escaped}%`);
+    }
+  }
+
+  // Sorting
+  switch (sort) {
+    case 'updated_asc':
+      query = query.order('updated_at', { ascending: true });
+      break;
+    case 'created_desc':
+      query = query.order('created_at', { ascending: false });
+      break;
+    case 'created_asc':
+      query = query.order('created_at', { ascending: true });
+      break;
+    case 'title_asc':
+      query = query.order('title', { ascending: true });
+      break;
+    case 'title_desc':
+      query = query.order('title', { ascending: false });
+      break;
+    case 'updated_desc':
+    default:
+      query = query.order('updated_at', { ascending: false });
+      break;
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    console.error('fetchNotes error:', error.message);
+    throw error;
+  }
+  return data || [];
+}
+
+/**
+ * Fetch a single note by ID
+ */
+export async function fetchNoteById(id) {
+  const supabase = getClient();
+  const { data, error } = await supabase
+    .from('notes')
+    .select('*, projects(id, name, category, status)')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Create a new note
+ */
+export async function createNote({ title, content = '', category = 'Personal', tags = [], project_id = null }) {
+  const supabase = getClient();
+  const userId = requireUserId();
+
+  const cleanTitle = (title || '').trim();
+  if (!cleanTitle) {
+    throw new Error('Note title is required.');
+  }
+
+  const validCategories = [
+    'Meeting Notes', 'Learning Notes', 'Technical Notes',
+    'Project Ideas', 'Research', 'Personal', 'Documentation', 'Other'
+  ];
+  const finalCategory = validCategories.includes(category) ? category : 'Personal';
+
+  const cleanTags = Array.isArray(tags)
+    ? [...new Set(tags.map(t => String(t).trim().toLowerCase()).filter(Boolean))]
+    : [];
+
+  const { data, error } = await supabase
+    .from('notes')
+    .insert({
+      user_id: userId,
+      title: cleanTitle,
+      content: content || '',
+      category: finalCategory,
+      tags: cleanTags,
+      project_id: project_id || null
+    })
+    .select('*, projects(id, name, category, status)')
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Update an existing note
+ */
+export async function updateNote(id, updates) {
+  const supabase = getClient();
+  const cleanUpdates = {};
+
+  if (updates.title !== undefined) {
+    const cleanTitle = String(updates.title).trim();
+    if (!cleanTitle) throw new Error('Note title cannot be empty.');
+    cleanUpdates.title = cleanTitle;
+  }
+
+  if (updates.content !== undefined) {
+    cleanUpdates.content = updates.content;
+  }
+
+  if (updates.category !== undefined) {
+    cleanUpdates.category = updates.category;
+  }
+
+  if (updates.tags !== undefined) {
+    cleanUpdates.tags = Array.isArray(updates.tags)
+      ? [...new Set(updates.tags.map(t => String(t).trim().toLowerCase()).filter(Boolean))]
+      : [];
+  }
+
+  if (updates.project_id !== undefined) {
+    cleanUpdates.project_id = updates.project_id || null;
+  }
+
+  const { data, error } = await supabase
+    .from('notes')
+    .update(cleanUpdates)
+    .eq('id', id)
+    .select('*, projects(id, name, category, status)')
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Delete a note by ID
+ */
+export async function deleteNote(id) {
+  const supabase = getClient();
+  const { error } = await supabase
+    .from('notes')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+  return true;
+}
+
+/**
+ * Upload an image file for notes to private Supabase Storage
+ * Returns object with storage path and signed URL for markdown embedding
+ * @param {File|Blob} file
+ * @param {string} [originalName]
+ */
+export async function uploadNoteImage(file, originalName = 'image.png') {
+  const supabase = getClient();
+  const userId = requireUserId();
+
+  const maxSizeBytes = 5 * 1024 * 1024; // 5MB
+  if (file.size > maxSizeBytes) {
+    throw new Error('Image size exceeds 5MB limit.');
+  }
+
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+  const mimeType = file.type || 'image/png';
+  if (!allowedTypes.includes(mimeType)) {
+    throw new Error('Unsupported image format. Allowed: JPG, PNG, GIF, WebP, SVG.');
+  }
+
+  // Derive file extension
+  let ext = 'png';
+  if (mimeType === 'image/jpeg') ext = 'jpg';
+  else if (mimeType === 'image/gif') ext = 'gif';
+  else if (mimeType === 'image/webp') ext = 'webp';
+  else if (mimeType === 'image/svg+xml') ext = 'svg';
+  else if (originalName && originalName.includes('.')) {
+    ext = originalName.split('.').pop().toLowerCase();
+  }
+
+  const filename = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${ext}`;
+  const storagePath = `${userId}/${filename}`;
+
+  const { data: uploadData, error: uploadError } = await supabase.storage
+    .from('note-images')
+    .upload(storagePath, file, {
+      contentType: mimeType,
+      cacheControl: '3600',
+      upsert: false
+    });
+
+  if (uploadError) {
+    console.error('uploadNoteImage error:', uploadError);
+    throw new Error(`Image upload failed: ${uploadError.message}`);
+  }
+
+  // Generate a long-lived signed URL for displaying the image inside the application (1 year)
+  const { data: signedData, error: signedError } = await supabase.storage
+    .from('note-images')
+    .createSignedUrl(storagePath, 60 * 60 * 24 * 365);
+
+  if (signedError) {
+    console.warn('createSignedUrl warning:', signedError);
+  }
+
+  return {
+    path: storagePath,
+    signedUrl: signedData?.signedUrl || '',
+    filename
+  };
+}
+
+/**
+ * Remove an image from Supabase Storage
+ */
+export async function deleteNoteImage(storagePath) {
+  const supabase = getClient();
+  const { error } = await supabase.storage
+    .from('note-images')
+    .remove([storagePath]);
+
+  if (error) {
+    console.warn('deleteNoteImage warning:', error.message);
+  }
+}
+
