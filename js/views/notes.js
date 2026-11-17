@@ -148,7 +148,7 @@ function renderNotesLayout(container) {
           </button>
         </div>
       </div>
-
+      <br>
       <!-- Controls & Filter Toolbar -->
       <div class="notes-controls-bar">
         <!-- Search Input -->

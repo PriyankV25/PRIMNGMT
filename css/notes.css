@@ -297,6 +297,10 @@
   overflow: hidden;
 }
 
+.markdown-preview-container.note-viewer-content {
+    padding: 20px;
+}
+
 .notes-editor-tabs {
   display: flex;
   border-bottom: 1px solid var(--color-border, #344752);
@@ -318,6 +322,12 @@
   align-items: center;
   gap: 0.4rem;
   transition: color var(--transition-fast, 0.16s ease), border-color var(--transition-fast, 0.16s ease);
+}
+
+.view-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .notes-tab-btn:hover {
